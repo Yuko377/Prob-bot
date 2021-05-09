@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace kontur_project
 {
     public static class AppSettings
@@ -14,7 +15,14 @@ namespace kontur_project
             {"Показательное", typeof(ExpDistribution) }
         };
 
-        public static Dictionary<long, IDistribution> MyDistributions = new Dictionary<long, IDistribution>();
+        public static Dictionary<string, string> AvailableMethods = new Dictionary<string, string>
+        {
+            {"Плотность", "Density"},
+            {"Функция распределения", "ProbabilityFunction"}
+        };
+
+
+        public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();
         public static string Name { get; set; } = "<BOT_NAME>";
         public static string Key { get; set; } = "1748341623:AAHKn6GhefvaAAMSmY_IsdycvmM39jEARFI";
     }

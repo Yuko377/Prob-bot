@@ -12,9 +12,8 @@ namespace kontur_project
         public string Name { get; }
         public int ParamNum { get; set; }
         public List<double> distParams { get; set; }
-        public string Method1();
-        public string Method2();
-        public string Method3();
+        public double Density(double x);
+        public double ProbabilityFunction(double x);
 
     }
     class UniformDistribution : IDistribution
@@ -29,16 +28,21 @@ namespace kontur_project
         }
         public List<double> distParams { get; set; }
 
-        public string Method1()
-            => "Метод 1 равномерного распределения - 1 параметр " + distParams[0].ToString();
+        public double Density(double x)
+            => 1 / (distParams[1] - distParams[0]);
 
 
-        public string Method2()
-            => "Метод 2 равномерного распределения";
+        public double ProbabilityFunction(double x)
+        {
+            if (x <= distParams[0])
+                return 0;
+            if (distParams[0] < x && x < distParams[1])
+                return (x - distParams[0]) / (distParams[1] - distParams[0]);
+            else
+                return 1;
+        }
 
 
-        public string Method3()
-            => "Метод 3 равномерного распределения";
     }
 
     public class ExpDistribution : IDistribution
@@ -56,17 +60,15 @@ namespace kontur_project
 
         public List<double> distParams { get; set; }
 
-        public string Method1()
-            => "Метод 1 показательного распределения";
+        public double Density(double x)
+            => distParams[0] * Math.Exp(-distParams[0] * x);
 
-        public string Method2()
-            => "Метод 2 показательного распределения";
-
-        public string Method3()
-            => "Метод 3 показательного распределения";
-
-        public string Method4()
-            => "Метод 4 показательного распределения";
-
+        public double ProbabilityFunction(double x)
+        {
+            if (x <= 0)
+                return 0;
+            else
+                return 1 - Math.Exp(-distParams[0] * x);
+        }
     }
 }

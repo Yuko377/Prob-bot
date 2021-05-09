@@ -14,9 +14,9 @@ namespace kontur_project
     {
         public string Name { get; }
 
-        public Task Execute(Message message);
+        public Task Execute(Message message, string text);
 
-        public bool Contains(Message message);
+        public bool NeedToExecute(Message message);
     }
 
     public class StartCommand : ICommand
@@ -24,7 +24,7 @@ namespace kontur_project
 
         public string Name => @"/start";
 
-        public bool Contains(Message message)
+        public bool NeedToExecute(Message message)
         {
             if (message.Type != Telegram.Bot.Types.Enums.MessageType.Text )
                 return false;
@@ -32,9 +32,10 @@ namespace kontur_project
             return message.Text.Contains(this.Name);
         }
 
-        public async Task Execute(Message message)
+        public async Task Execute(Message message, string text)
         {
             await SendDistributionKeyboard(message, AppSettings.Repository);
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionWaitingCondition());
         }
 
         static async Task SendDistributionKeyboard(Message message, Dictionary<string, Type> repository)
@@ -59,27 +60,41 @@ namespace kontur_project
         }
     }
 
-    public class ParameterCommand : ICommand
+    public class DistributionReadingCommand : ICommand
+    {
+        public string Name => throw new NotImplementedException();
+
+        public async Task Execute(Message message, string key)
+        {
+            var currType = AppSettings.Repository[key];
+            var ctor = currType.GetConstructor(new Type[] { });
+            var currDistr = (IDistribution)ctor.Invoke(new object[] { });
+            var num = currType.GetProperty("ParamNum").GetValue(currDistr);
+            AppSettings.BotUsers[message.Chat.Id].Distribution.Add(currDistr);
+
+
+            await Bot.botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: $"Ты выбрал {key.ToLower()} распределение, введи {num} параметр(a) в порядке возрастания. Дробная часть через запятую, числа через пробел"
+            );
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionParamsWaitingCondition());
+        }
+
+        public bool NeedToExecute(Message message)
+        {
+            return true;
+        }
+    }
+
+    public class ParameterReadingCommand : ICommand
     {
         public string Name => "param_cmd";
 
-        public bool Contains(Message message)
+        public bool NeedToExecute(Message message)
         {
             var currId = message.Chat.Id;
             var currParams = message.Text.Split(' ');
-            //Console.WriteLine(currParams[0]);
-            if (!AppSettings.MyDistributions.ContainsKey(currId))
-            {
-                 Bot.botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Сначала ввел параметры, емае"
-                );
-              //   Bot.botClient.DeleteMessageAsync(message.Chat.Id);
-
-            }
-            Console.WriteLine(currParams.Length);
-            Console.WriteLine(AppSettings.MyDistributions[currId].ParamNum);
-            if (currParams.Length != AppSettings.MyDistributions[currId].ParamNum)
+            if (currParams.Length != AppSettings.BotUsers[currId].Distribution.Last().ParamNum)
             {
                 Bot.botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
@@ -102,46 +117,155 @@ namespace kontur_project
                 doubleParams.Add(doubleParameter);
             }
 
-            AppSettings.MyDistributions[currId].distParams = doubleParams;
+            if (doubleParams.Count == 2)
+            {
+                if (doubleParams[0] >= doubleParams[1])
+                {
+                    Bot.botClient.SendTextMessageAsync(
+                        chatId: message.Chat.Id,
+                        text: "Что-то не так с параметрами, попробуй еще раз");
+                    return false;
+                }
+            }
+
+            AppSettings.BotUsers[currId].Distribution.Last().distParams = doubleParams;
             return true;
 
         }
 
-        public async Task Execute(Message message)
+        public async Task Execute(Message message, string text)
         {
-            if (Contains(message))
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodWaitingCondition());
+            var currMethods = AppSettings.AvailableMethods;
+            var listForInlineKb = new List<List<InlineKeyboardButton>>();
+            foreach (var method in currMethods.Keys)
             {
-                var currMethods = AppSettings.MyDistributions[message.Chat.Id].
-                    GetType().
-                    GetMethods().Where(method => method.Name.Contains("Method"));
-                var listForInlineKb = new List<List<InlineKeyboardButton>>();
-                foreach (var method in currMethods)
-                {
-                    listForInlineKb.Add(
-                        new List<InlineKeyboardButton>()
-                        {
-                            InlineKeyboardButton.WithCallbackData(method.Name, "method." + method.Name),
-                        });
-                }
-
-                var methodsKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-                await Bot.botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Выбери метод",
-                    replyMarkup: methodsKeyboard
-                );
-
+                listForInlineKb.Add(
+                    new List<InlineKeyboardButton>()
+                    {
+                        InlineKeyboardButton.WithCallbackData(method, "method." + currMethods[method]),
+                    });
             }
 
-            if (!Contains(message))
-            {
-                await Bot.botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Что-то не так с параметрами"
-                );
-            }
-
-            
+            var methodsKeyboard = new InlineKeyboardMarkup(listForInlineKb);
+            await Bot.botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "Выбери метод",
+                replyMarkup: methodsKeyboard
+            );
         }
+    }
+
+    public class MethodReadingCommand : ICommand
+    {
+        public string Name => throw new NotImplementedException();
+
+        public bool NeedToExecute(Message message)
+        { 
+            return true;
+        }
+
+        public async Task Execute(Message message, string methodName)
+        {
+            AppSettings.BotUsers[message.Chat.Id].Methods.Add(methodName);
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodArgsWaitingCondition());
+            Bot.botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "Вбей аргумент");
+
+        }
+    }
+
+    public class MethodArgsWaitingCommand : ICommand
+    {
+        public string Name => throw new NotImplementedException();
+
+        public bool NeedToExecute(Message message)
+        {
+            if (message.ReplyMarkup != null)
+                return false;
+            var currParams = message.Text.Split(' ');
+            if (currParams.Length != 1)
+            {
+                Bot.botClient.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text: "Что-то не так с аргументами, попробуй еще раз");
+                return false;
+            }
+
+            double doubleParameter;
+            var inputParam = currParams[0];
+            if (!double.TryParse(inputParam, out doubleParameter))
+            {
+                Console.WriteLine("не парсится");
+                Bot.botClient.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text: "Что-то не так с параметрами, попробуй еще раз");
+                return false;
+            }
+            AppSettings.BotUsers[message.Chat.Id].Args.Add(doubleParameter);
+            return true;
+
+        }
+
+        public async Task Execute(Message message, string text)
+        {
+            var currId = message.Chat.Id;
+            var methodName = AppSettings.BotUsers[currId].Methods.Last();
+            var currMethod = AppSettings.BotUsers[currId].Distribution.Last().GetType().GetMethod(methodName);
+            var result = currMethod.Invoke(AppSettings.BotUsers[currId].Distribution.Last(),
+                                                    new Object[] { AppSettings.BotUsers[currId].Args.Last() });
+
+            var listForInlineKb = new List<List<InlineKeyboardButton>>();
+
+            listForInlineKb.Add(
+                new List<InlineKeyboardButton>()
+                {
+                    InlineKeyboardButton.WithCallbackData("Выбрать другой метод", "change.changeMethod"),
+                });
+            listForInlineKb.Add(
+                new List<InlineKeyboardButton>()
+                {
+                    InlineKeyboardButton.WithCallbackData("В начало", "change.ToStart"),
+                });
+
+            var changesKeyboard = new InlineKeyboardMarkup(listForInlineKb);
+
+
+            await Bot.botClient.SendTextMessageAsync(
+                chatId: currId,
+                text: result.ToString(),
+                replyMarkup: changesKeyboard
+            );
+        }
+    }
+
+    public class ChangesCommand : ICommand
+    {
+        public string Name => throw new NotImplementedException();
+
+        public bool NeedToExecute(Message message)
+        {
+            return true;
+        }
+
+        public async Task Execute(Message message, string text)
+        {
+            if (text == "changeMethod")
+            {
+                var tempCmd = new ParameterReadingCommand();
+                tempCmd.Execute(message, text);
+
+            }
+
+            if (text == "ToStart")
+            {
+                var tempCmd = new StartCommand();
+                tempCmd.Execute(message, text);
+
+            }
+        }
+
+      
     }
 }

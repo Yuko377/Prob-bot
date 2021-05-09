@@ -37,14 +37,23 @@ namespace kontur_project
         {
 
             var message = messageEventArgs.Message;
-            foreach (var command in Bot.commandsList)
+            var messageId = message.Chat.Id;
+            if (!(AppSettings.BotUsers.ContainsKey(messageId)))
             {
-                if (command.Contains(message))
+                AppSettings.BotUsers.Add(messageId, new BotUser(messageId));
+            }
+
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();
+
+            foreach (var command in currCondition.Commands)
+            {
+                if (command.NeedToExecute(message))
                 {
-                    await command.Execute(message);
+                    await command.Execute(message, message.Text);
                     break;
                 }
             }
+
         }
 
         private static async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)
@@ -55,38 +64,18 @@ namespace kontur_project
                 callbackQueryId: callbackQuery.Id,
                 text: $"Received {callbackQuery.Data}"
             );
-            var queryType = callbackQuery.Data.Split('.').First();
-            if (queryType == "distribution")
-            {
-                var key = callbackQuery.Data.Split('.')[1];
-                var currType = AppSettings.Repository[key];
-                var ctor = currType.GetConstructor(new Type[] { });
-                var currDistr = (IDistribution)ctor.Invoke(new object[] { });
-                var num = currType.GetProperty("ParamNum").GetValue(currDistr);
-                if (!(AppSettings.MyDistributions.TryAdd(callbackQuery.Message.Chat.Id, currDistr)))
-                {
-                    AppSettings.MyDistributions.Remove(callbackQuery.Message.Chat.Id);
-                    AppSettings.MyDistributions.Add(callbackQuery.Message.Chat.Id, currDistr);
-                }
-                    
-                
-                await Bot.botClient.SendTextMessageAsync(
-                    chatId: callbackQuery.Message.Chat.Id,
-                    text: $"Ты выбрал {key.ToLower()} распределение, введи {num} параметр(a). Дробная часть через запятую, числа через пробел"
-                );
-                
-            }
 
-            if (queryType == "method")
+            var messageId = callbackQuery.Message.Chat.Id;
+            var message = callbackQuery.Message;
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();
+
+            foreach (var command in currCondition.Commands)
             {
-                var currId = callbackQuery.Message.Chat.Id;
-                var methodName = callbackQuery.Data.Split('.')[1];
-                var currMethod = AppSettings.MyDistributions[currId].GetType().GetMethod(methodName);
-                var result = currMethod.Invoke(AppSettings.MyDistributions[currId], new Object[]{});
-                await Bot.botClient.SendTextMessageAsync(
-                    chatId: callbackQuery.Message.Chat.Id,
-                    text: result.ToString()
-                );
+                if (command.NeedToExecute(message))
+                {
+                    await command.Execute(message, callbackQuery.Data.Split('.')[1]);
+                    break;
+                }
             }
 
             
