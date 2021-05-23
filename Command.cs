@@ -97,8 +97,8 @@ namespace kontur_project
             if (currParams.Length != AppSettings.BotUsers[currId].Distribution.Last().ParamNum)
             {
                 Bot.botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Что-то не так с параметрами, попробуй еще раз");
+                    chatId: currId,
+                    text: "Что-то не так с параметрами, попробуй еще раз" + currParams.Length.ToString());// либо много параметров либо много пробелов
                 return false;
             }
             double doubleParameter;
@@ -109,7 +109,7 @@ namespace kontur_project
                 {
                     Console.WriteLine("не парсится");
                     Bot.botClient.SendTextMessageAsync(
-                        chatId: message.Chat.Id,
+                        chatId: currId,
                         text: "Что-то не так с параметрами, попробуй еще раз");
                     return false;
 
@@ -169,7 +169,7 @@ namespace kontur_project
         {
             AppSettings.BotUsers[message.Chat.Id].Methods.Add(methodName);
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodArgsWaitingCondition());
-            Bot.botClient.SendTextMessageAsync(
+            await Bot.botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
                 text: "Вбей аргумент");
 
@@ -205,7 +205,6 @@ namespace kontur_project
             }
             AppSettings.BotUsers[message.Chat.Id].Args.Add(doubleParameter);
             return true;
-
         }
 
         public async Task Execute(Message message, string text)
@@ -214,7 +213,7 @@ namespace kontur_project
             var methodName = AppSettings.BotUsers[currId].Methods.Last();
             var currMethod = AppSettings.BotUsers[currId].Distribution.Last().GetType().GetMethod(methodName);
             var result = currMethod.Invoke(AppSettings.BotUsers[currId].Distribution.Last(),
-                                                    new Object[] { AppSettings.BotUsers[currId].Args.Last() });
+                                                    new object[] { AppSettings.BotUsers[currId].Args.Last() });
 
             var listForInlineKb = new List<List<InlineKeyboardButton>>();
 
@@ -230,7 +229,6 @@ namespace kontur_project
                 });
 
             var changesKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-
 
             await Bot.botClient.SendTextMessageAsync(
                 chatId: currId,
@@ -254,14 +252,14 @@ namespace kontur_project
             if (text == "changeMethod")
             {
                 var tempCmd = new ParameterReadingCommand();
-                tempCmd.Execute(message, text);
+                await tempCmd.Execute(message, text);
 
             }
 
             if (text == "ToStart")
             {
                 var tempCmd = new StartCommand();
-                tempCmd.Execute(message, text);
+                await tempCmd.Execute(message, text);
 
             }
         }

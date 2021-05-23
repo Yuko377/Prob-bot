@@ -21,9 +21,8 @@ namespace kontur_project
             {"Функция распределения", "ProbabilityFunction"}
         };
 
-
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();
         public static string Name { get; set; } = "<BOT_NAME>";
-        public static string Key { get; set; } = "1748341623:AAHKn6GhefvaAAMSmY_IsdycvmM39jEARFI";
+        public static string Key { get; set; } = new MessageManager("API_key").GetMessage();
     }
 }
