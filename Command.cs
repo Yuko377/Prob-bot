@@ -3,9 +3,12 @@ using System.Linq;
 using Telegram.Bot.Types;
 using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
+using System.Collections;
+using System.Globalization;
 
 namespace kontur_project
 {
+
     public interface ICommand
     {
         public string Name { get; }
@@ -86,29 +89,34 @@ namespace kontur_project
         public bool NeedToExecute(Message message)
         {
             var currId = message.Chat.Id;
-            var currParams = message.Text.Split(' ');
+            var currParams = message.Text.Split(' ').Where(x => x != "").ToArray();
             if (currParams.Length != AppSettings.BotUsers[currId].Distribution.Last().ParamNum)
             {
                 MessageManager.MessageOutput(
                     chatId: currId,
-                    text: "Что-то не так с параметрами, попробуй еще раз");// либо много параметров либо много пробелов
+                    text: "Много параметров, попробуй еще раз");// много параметров
+
                 return false;
             }
             double doubleParameter;
             var doubleParams = new List<double>(currParams.Length);
+
             foreach (var el in currParams)
             {
-                if (!double.TryParse(el, out doubleParameter))
+                var el1 = el.Replace(',', '.');
+                if (!double.TryParse(el1, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleParameter))
                 {
                     Console.WriteLine("не парсится");
                     MessageManager.MessageOutput(
                         chatId: currId,
-                        text: "Что-то не так с параметрами, попробуй еще раз");
-                    return false;
+                        text: "Параметры не распознаны, попробуй еще раз");
 
+                    return false;
                 }
+
                 doubleParams.Add(doubleParameter);
             }
+
 
             if (doubleParams.Count == 2)
             {
@@ -176,7 +184,8 @@ namespace kontur_project
         {
             if (message.ReplyMarkup != null)
                 return false;
-            var currParams = message.Text.Split(' ');
+
+            var currParams = message.Text.Split(' ').Where(x => x != "").ToArray();
             if (currParams.Length != 1)
             {
                 MessageManager.MessageOutput(
@@ -187,15 +196,20 @@ namespace kontur_project
 
             double doubleParameter;
             var inputParam = currParams[0];
-            if (!double.TryParse(inputParam, out doubleParameter))
+            inputParam = inputParam.Replace(',', '.');
+
+            if (!double.TryParse(inputParam, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleParameter))
             {
                 Console.WriteLine("не парсится");
                 MessageManager.MessageOutput(
                     chatId: message.Chat.Id,
                     text: "Что-то не так с параметрами, попробуй еще раз");
+
                 return false;
             }
+
             AppSettings.BotUsers[message.Chat.Id].Args.Add(doubleParameter);
+
             return true;
         }
 
