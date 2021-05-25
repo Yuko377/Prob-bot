@@ -23,6 +23,6 @@ namespace kontur_project
 
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();
         public static string Name { get; set; } = "<BOT_NAME>";
-        public static string Key { get; set; } = new MessageManager("API_key").GetMessage();
+        public static string Key { get; set; } = MessageManager.GetMessage("API_key");
     }
 }

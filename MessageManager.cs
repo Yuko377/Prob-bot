@@ -1,34 +1,33 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Threading;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
 {
-    public class MessageManager
+    public static class MessageManager
     {
-        private readonly string fileName;
-        
-        public MessageManager(string fileName)
+        public static string GetMessage(string fileName)// возможно есть смысл сделать асинхронным
         {
-            this.fileName = fileName;
+            var buff = Directory.GetCurrentDirectory();
+            var filePath = Path.Combine(buff, $"Helping_files\\{fileName}.txt");
+
+            using StreamReader sr = new StreamReader(filePath);
+            var message = sr.ReadToEnd();
+            
+            return message;
         }
 
-        public string GetMessage()// возможно есть смысл сделать асинхронным
+        public static async void MessageOutput(
+            ChatId chatId, string text, ParseMode parseMode = ParseMode.Default,
+            bool disableWebPagePreview = false, bool disableNotification = false,
+            int replyToMessageId = 0, IReplyMarkup replyMarkup = null,
+            CancellationToken cancellationToken = default)
         {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Help\\{fileName}.txt");
-
-            var message = string.Empty;
-            Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
-            try
-            {
-                using StreamReader sr = new StreamReader(filePath);
-                message = sr.ReadToEnd();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return message;
+            await Bot.botClient.SendTextMessageAsync(
+                chatId, text, parseMode,disableWebPagePreview, disableNotification,
+                replyToMessageId, replyMarkup, cancellationToken);
         }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
+using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
@@ -14,14 +10,13 @@ namespace kontur_project
     {
         public string Name { get; }
 
-        public Task Execute(Message message, string text);
+        public void Execute(Message message, string text);
 
         public bool NeedToExecute(Message message);
     }
 
     public class StartCommand : ICommand
     {
-
         public string Name => @"/start";
 
         public bool NeedToExecute(Message message)
@@ -32,13 +27,13 @@ namespace kontur_project
             return message.Text.Contains(this.Name);
         }
 
-        public async Task Execute(Message message, string text)
+        public void Execute(Message message, string text)
         {
-            await SendDistributionKeyboard(message, AppSettings.Repository);
+            SendDistributionKeyboard(message, AppSettings.Repository);
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionWaitingCondition());
         }
 
-        static async Task SendDistributionKeyboard(Message message, Dictionary<string, Type> repository)
+        static void SendDistributionKeyboard(Message message, Dictionary<string, Type> repository)
         {
             var listForInlineKb = new List<List<InlineKeyboardButton>>();
             foreach (var key in repository.Keys)
@@ -51,12 +46,10 @@ namespace kontur_project
             }
 
             var distributionKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-            await Bot.botClient.SendTextMessageAsync(
+            MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
                 text: "Выбери распределение",
-                replyMarkup: distributionKeyboard
-            );
-
+                replyMarkup: distributionKeyboard);
         }
     }
 
@@ -64,7 +57,7 @@ namespace kontur_project
     {
         public string Name => throw new NotImplementedException();
 
-        public async Task Execute(Message message, string key)
+        public void Execute(Message message, string key)
         {
             var currType = AppSettings.Repository[key];
             var ctor = currType.GetConstructor(new Type[] { });
@@ -73,7 +66,7 @@ namespace kontur_project
             AppSettings.BotUsers[message.Chat.Id].Distribution.Add(currDistr);
 
 
-            await Bot.botClient.SendTextMessageAsync(
+            MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
                 text: $"Ты выбрал {key.ToLower()} распределение, введи {num} параметр(a) в порядке возрастания. Дробная часть через запятую, числа через пробел"
             );
@@ -96,9 +89,9 @@ namespace kontur_project
             var currParams = message.Text.Split(' ');
             if (currParams.Length != AppSettings.BotUsers[currId].Distribution.Last().ParamNum)
             {
-                Bot.botClient.SendTextMessageAsync(
+                MessageManager.MessageOutput(
                     chatId: currId,
-                    text: "Что-то не так с параметрами, попробуй еще раз" + currParams.Length.ToString());// либо много параметров либо много пробелов
+                    text: "Что-то не так с параметрами, попробуй еще раз");// либо много параметров либо много пробелов
                 return false;
             }
             double doubleParameter;
@@ -108,7 +101,7 @@ namespace kontur_project
                 if (!double.TryParse(el, out doubleParameter))
                 {
                     Console.WriteLine("не парсится");
-                    Bot.botClient.SendTextMessageAsync(
+                    MessageManager.MessageOutput(
                         chatId: currId,
                         text: "Что-то не так с параметрами, попробуй еще раз");
                     return false;
@@ -121,7 +114,7 @@ namespace kontur_project
             {
                 if (doubleParams[0] >= doubleParams[1])
                 {
-                    Bot.botClient.SendTextMessageAsync(
+                    MessageManager.MessageOutput(
                         chatId: message.Chat.Id,
                         text: "Что-то не так с параметрами, попробуй еще раз");
                     return false;
@@ -133,7 +126,7 @@ namespace kontur_project
 
         }
 
-        public async Task Execute(Message message, string text)
+        public void Execute(Message message, string text)
         {
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodWaitingCondition());
             var currMethods = AppSettings.AvailableMethods;
@@ -148,11 +141,10 @@ namespace kontur_project
             }
 
             var methodsKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-            await Bot.botClient.SendTextMessageAsync(
+            MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
                 text: "Выбери метод",
-                replyMarkup: methodsKeyboard
-            );
+                replyMarkup: methodsKeyboard);
         }
     }
 
@@ -165,11 +157,11 @@ namespace kontur_project
             return true;
         }
 
-        public async Task Execute(Message message, string methodName)
+        public void Execute(Message message, string methodName)
         {
             AppSettings.BotUsers[message.Chat.Id].Methods.Add(methodName);
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodArgsWaitingCondition());
-            await Bot.botClient.SendTextMessageAsync(
+            MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
                 text: "Вбей аргумент");
 
@@ -187,7 +179,7 @@ namespace kontur_project
             var currParams = message.Text.Split(' ');
             if (currParams.Length != 1)
             {
-                Bot.botClient.SendTextMessageAsync(
+                MessageManager.MessageOutput(
                     chatId: message.Chat.Id,
                     text: "Что-то не так с аргументами, попробуй еще раз");
                 return false;
@@ -198,7 +190,7 @@ namespace kontur_project
             if (!double.TryParse(inputParam, out doubleParameter))
             {
                 Console.WriteLine("не парсится");
-                Bot.botClient.SendTextMessageAsync(
+                MessageManager.MessageOutput(
                     chatId: message.Chat.Id,
                     text: "Что-то не так с параметрами, попробуй еще раз");
                 return false;
@@ -207,7 +199,7 @@ namespace kontur_project
             return true;
         }
 
-        public async Task Execute(Message message, string text)
+        public void Execute(Message message, string text)
         {
             var currId = message.Chat.Id;
             var methodName = AppSettings.BotUsers[currId].Methods.Last();
@@ -230,11 +222,10 @@ namespace kontur_project
 
             var changesKeyboard = new InlineKeyboardMarkup(listForInlineKb);
 
-            await Bot.botClient.SendTextMessageAsync(
+            MessageManager.MessageOutput(
                 chatId: currId,
                 text: result.ToString(),
-                replyMarkup: changesKeyboard
-            );
+                replyMarkup: changesKeyboard);
         }
     }
 
@@ -247,23 +238,21 @@ namespace kontur_project
             return true;
         }
 
-        public async Task Execute(Message message, string text)
+        public void Execute(Message message, string text)
         {
             if (text == "changeMethod")
             {
                 var tempCmd = new ParameterReadingCommand();
-                await tempCmd.Execute(message, text);
+                tempCmd.Execute(message, text);
 
             }
 
             if (text == "ToStart")
             {
                 var tempCmd = new StartCommand();
-                await tempCmd.Execute(message, text);
+                tempCmd.Execute(message, text);
 
             }
         }
-
-      
     }
 }
