@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace kontur_project
 { 
@@ -29,8 +26,14 @@ namespace kontur_project
         public List<double> distParams { get; set; }
 
         public double Density(double x)
-            => 1 / (distParams[1] - distParams[0]);
-
+        {
+            if (x <= distParams[0])
+                return 0;
+            if (distParams[0] < x && x < distParams[1])
+                return 1 / (distParams[1] - distParams[0]);
+            else
+                return 0;
+        }
 
         public double ProbabilityFunction(double x)
         {
@@ -41,8 +44,6 @@ namespace kontur_project
             else
                 return 1;
         }
-
-
     }
 
     public class ExpDistribution : IDistribution
@@ -61,7 +62,12 @@ namespace kontur_project
         public List<double> distParams { get; set; }
 
         public double Density(double x)
-            => distParams[0] * Math.Exp(-distParams[0] * x);
+        {
+            if (x <= 0)
+                return 0;
+            else
+                return distParams[0] * Math.Exp(-distParams[0] * x);
+        }
 
         public double ProbabilityFunction(double x)
         {

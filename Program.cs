@@ -49,7 +49,7 @@ namespace kontur_project
             {
                 if (command.NeedToExecute(message))
                 {
-                    await command.Execute(message, message.Text);
+                    command.Execute(message, message.Text);
                     break;
                 }
             }
@@ -73,7 +73,7 @@ namespace kontur_project
             {
                 if (command.NeedToExecute(message))
                 {
-                    await command.Execute(message, callbackQuery.Data.Split('.')[1]);
+                    command.Execute(message, callbackQuery.Data.Split('.')[1]);
                     break;
                 }
             }
@@ -118,8 +118,6 @@ namespace kontur_project
                 receiveErrorEventArgs.ApiRequestException.Message
             );
         }
-
-        
     }
 }
 
