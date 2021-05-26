@@ -3,6 +3,7 @@ using System.Linq;
 using Telegram.Bot.Types;
 using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
+using System.Reflection;
 
 namespace kontur_project
 {
@@ -38,20 +39,26 @@ namespace kontur_project
                 return false;
             }
 
-            AppSettings.BotUsers[message.Chat.Id].Args.Add(currArgs[0]);
+            AppSettings.BotUsers[message.Chat.Id].Args.Add(currArgs);
 
             return true;
         }
 
         public void Execute(Message message, string text)
         {
-            var currId = message.Chat.Id;
-            var methodName = AppSettings.BotUsers[currId].Methods.Last();
-            var currMethod = AppSettings.BotUsers[currId].Distribution.Last().GetType().GetMethod(methodName);
-            var result = currMethod.Invoke(AppSettings.BotUsers[currId].Distribution.Last(),
-                                                    new object[] { AppSettings.BotUsers[currId].Args.Last() });
+            long currId = message.Chat.Id;
 
+            string methodName = AppSettings.BotUsers[currId].Methods.Last();
+            MethodInfo currMethod = AppSettings.BotUsers[currId].Distribution.Last().GetType().GetMethod(methodName);
+            var args = AppSettings.BotUsers[currId].Args
+                .Last()
+                .Select(d => (object)d)
+                .ToArray();
+            Distribution obj = AppSettings.BotUsers[currId].Distribution.Last();
+
+            var result = currMethod.Invoke(obj, args);
             var listForInlineKb = new List<List<InlineKeyboardButton>>();
+
 
             listForInlineKb.Add(
                 new List<InlineKeyboardButton>()
