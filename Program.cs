@@ -1,14 +1,8 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Telegram.Bot;
+﻿using System;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
 {
@@ -32,10 +26,8 @@ namespace kontur_project
             Bot.botClient.StopReceiving();
         }
 
-
-        private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)
+        private static void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)// async?
         {
-
             var message = messageEventArgs.Message;
             var messageId = message.Chat.Id;
             if (!(AppSettings.BotUsers.ContainsKey(messageId)))
@@ -53,7 +45,6 @@ namespace kontur_project
                     break;
                 }
             }
-
         }
 
         private static async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)
@@ -77,8 +68,6 @@ namespace kontur_project
                     break;
                 }
             }
-
-            
         }
 
         #region Inline Mode
@@ -115,11 +104,7 @@ namespace kontur_project
         {
             Console.WriteLine("Received error: {0} — {1}",
                 receiveErrorEventArgs.ApiRequestException.ErrorCode,
-                receiveErrorEventArgs.ApiRequestException.Message
-            );
+                receiveErrorEventArgs.ApiRequestException.Message);
         }
     }
 }
-
-
-
