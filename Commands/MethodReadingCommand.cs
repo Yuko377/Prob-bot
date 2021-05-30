@@ -19,7 +19,6 @@ namespace kontur_project
             MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
                 text: "Вбей аргумент");
-
         }
     }
 }

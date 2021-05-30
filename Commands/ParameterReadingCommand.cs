@@ -42,7 +42,7 @@ namespace kontur_project
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodWaitingCondition());
             var currMethods = AppSettings.AvailableMethods;
             var listForInlineKb = new List<List<InlineKeyboardButton>>();
-            foreach (var method in currMethods.Keys)
+            foreach (var method in currMethods.Keys)//по названиям методов
             {
                 listForInlineKb.Add(
                     new List<InlineKeyboardButton>()
