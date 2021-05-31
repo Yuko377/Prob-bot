@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace kontur_project
 {
     public static class AppSettings
@@ -10,12 +9,6 @@ namespace kontur_project
         {
             {"Равномерное", typeof(UniformDistribution) },
             {"Показательное", typeof(ExpDistribution) }
-        };
-
-        public static Dictionary<string, string> AvailableMethods = new Dictionary<string, string>
-        {
-            {"Плотность", "Density"},
-            {"Функция распределения", "ProbabilityFunction"}
         };
 
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();

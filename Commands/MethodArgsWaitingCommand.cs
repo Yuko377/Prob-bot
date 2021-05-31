@@ -28,7 +28,7 @@ namespace kontur_project
             }
 
             var methodName = AppSettings.BotUsers[currId].Methods.Last();
-            var currMethod = AppSettings.BotUsers[currId].Distribution.Last().GetType().GetMethod(methodName);
+            var currMethod = AppSettings.BotUsers[currId].Distributions.Last().GetType().GetMethod(methodName);
             int argNum = currMethod.GetParameters().Length;
             if (currArgs.Length != argNum)
             {
@@ -49,12 +49,12 @@ namespace kontur_project
             long currId = message.Chat.Id;
 
             string methodName = AppSettings.BotUsers[currId].Methods.Last();
-            MethodInfo currMethod = AppSettings.BotUsers[currId].Distribution.Last().GetType().GetMethod(methodName);
+            MethodInfo currMethod = AppSettings.BotUsers[currId].Distributions.Last().GetType().GetMethod(methodName);
             var args = AppSettings.BotUsers[currId].Args
                 .Last()
                 .Select(d => (object)d)
                 .ToArray();
-            Distribution obj = AppSettings.BotUsers[currId].Distribution.Last();
+            Distribution obj = AppSettings.BotUsers[currId].Distributions.Last();
 
             var result = currMethod.Invoke(obj, args);
             var listForInlineKb = new List<List<InlineKeyboardButton>>();
