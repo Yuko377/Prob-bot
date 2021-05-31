@@ -1,22 +1,32 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Telegram.Bot.Types;
 using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
-using System.Reflection;
 
 namespace kontur_project
 {
     public class MethodArgsWaitingCommand : ICommand
     {
-        public string Name => throw new NotImplementedException();
+        public string Name => throw new NotImplementedException();//чёт хреново это
 
         public bool NeedToExecute(Message message)
         {
             if (message.ReplyMarkup != null)
                 return false;
-
+             
             var currId = message.Chat.Id;
+            var methodName = AppSettings.BotUsers[currId].Methods.Last();
+            var currMethod = AppSettings.BotUsers[currId].Distributions.Last().GetType().GetMethod(methodName);
+            int argNum = currMethod.GetParameters().Length;
+
+            if(argNum == 0)
+            {
+                AppSettings.BotUsers[message.Chat.Id].Args.Add(new double[] { });
+                return true;
+            }
+
             var currArgs = InputsParser.Parse(message.Text);
             if (currArgs == null)
             {
@@ -27,9 +37,6 @@ namespace kontur_project
                 return false;
             }
 
-            var methodName = AppSettings.BotUsers[currId].Methods.Last();
-            var currMethod = AppSettings.BotUsers[currId].Distributions.Last().GetType().GetMethod(methodName);
-            int argNum = currMethod.GetParameters().Length;
             if (currArgs.Length != argNum)
             {
                 MessageManager.MessageOutput(

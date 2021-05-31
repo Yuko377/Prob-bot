@@ -14,7 +14,8 @@ namespace kontur_project
         [NameMethod("функция распределения")]
         public abstract double ProbabilityFunction(double x);
 
-        public abstract string CheckParamsValid(params double[] parametres);
+        public virtual string CheckParamsValid(params double[] parametres)
+            => BaseParamsCheking(parametres);
 
         public string BaseParamsCheking(params double[] parametres)
             => parametres.Length != ParamNum ? "Число параметров не соответствует распределению" : null;

@@ -8,7 +8,9 @@ namespace kontur_project
         public static Dictionary<string, Type> Repository = new Dictionary<string, Type>
         {
             {"Равномерное", typeof(UniformDistribution) },
-            {"Показательное", typeof(ExpDistribution) }
+            {"Показательное", typeof(ExpDistribution) },
+            {"Нормальное", typeof(NormalDistribution) },
+            {"Коши", typeof(CauchyDistribution) }
         };
 
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();

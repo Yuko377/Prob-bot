@@ -36,7 +36,7 @@ namespace kontur_project
             currDistribution.distParams = currParams;
             return true;
         }
-
+        
         public void Execute(Message message, string text)
         {
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodWaitingCondition());

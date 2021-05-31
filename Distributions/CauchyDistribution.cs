@@ -1,0 +1,36 @@
+﻿using System;
+
+namespace kontur_project
+{
+    class CauchyDistribution : Distribution
+    {
+        public override long Id { get; set; }
+        public override int ParamNum { get => 2; }
+        public override string Name => "Коши";
+        public override double[] distParams { get; set; }
+
+        [NameMethod("генерация случайной величины")]
+        public double Generate()//метод обратного преобразования
+        {
+            var rnd = new Random();
+            var u = rnd.NextDouble();
+            return distParams[0] + distParams[1] * Math.Tan(Math.PI * (u - 0.5));
+        }
+
+        public override double Density(double x)
+            => (distParams[1]) / ((Math.Pow(x - distParams[0], 2) + Math.Pow(distParams[1], 2)) * Math.PI);
+
+        public override double ProbabilityFunction(double x)
+            => Math.Atan((x - distParams[0]) / distParams[1]) / Math.PI + 0.5;
+
+        public override string CheckParamsValid(params double[] parametres)
+        {
+            var answer = BaseParamsCheking(parametres);
+
+            if (0 >= parametres[1])
+                answer = "параметр масштаба должен быть положительным";
+
+            return answer;
+        }
+    }
+}
