@@ -36,6 +36,10 @@ namespace kontur_project
             }
 
             var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();
+            if (message.Text == "/start")
+            {
+                currCondition = new StartCondition();
+            }
 
             foreach (var command in currCondition.Commands)
             {
