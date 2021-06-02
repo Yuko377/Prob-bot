@@ -9,13 +9,7 @@ namespace kontur_project
 {
     public static class AppSettings
     {
-        public static Dictionary<string, Type> Repository = new Dictionary<string, Type>
-        {
-            {"Равномерное", typeof(UniformDistribution) },
-            {"Показательное", typeof(ExpDistribution) },
-            {"Нормальное", typeof(NormalDistribution) },
-            {"Коши", typeof(CauchyDistribution) }
-        };
+        public static Dictionary<string, Type> Repository = new RepositoryGetter().GetRepository();
 
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();
         public static string Name { get; set; } = "<BOT_NAME>";
