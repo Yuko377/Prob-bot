@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
+using System.Reflection;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 
 namespace kontur_project
 {
@@ -54,11 +55,26 @@ namespace kontur_project
 
     internal class RepositoryGetter
     {
-        internal Dictionary<string, Type> GetRepository(string[] distributions)
+        internal Dictionary<string, Type> GetRepository()
         {
             var distributionsDirectory = DirectoryWalker.GetDistributionsDirectory();
             var textDistributions = DirectoryWalker.GetDistributionsInside(distributionsDirectory);
 
+            var repository = new Dictionary<string, Type>();
+
+            foreach(var textDistribution in textDistributions)
+            {
+                var script = CSharpScript.Create(textDistribution, ScriptOptions.Default.WithReferences(Assembly.GetExecutingAssembly()));
+                var distType = (Type)script.RunAsync().Result.ReturnValue;
+
+                var constr = distType.GetConstructor(new Type[] { });
+                var currDist = (Distribution)constr.Invoke(new object[] { });
+                var distName = currDist.Name;
+
+                repository.Add(distName, distType);
+            }
+
+            return repository;
         }
     }
 }
