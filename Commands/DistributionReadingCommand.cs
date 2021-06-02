@@ -9,6 +9,11 @@ namespace kontur_project
 
         public void Execute(Message message, string key)// из словаря распределений из настроек берёт нужное по названию
         {
+            if (!AppSettings.Repository.ContainsKey(key))
+            {
+                MessageManager.MessageOutput(message.Chat.Id, "Выбери распределение из предложенных или введи его вручную");
+                return;
+            }
             var currType = AppSettings.Repository[key];
             var ctor = currType.GetConstructor(new Type[] { });
             var currDistr = (Distribution)ctor.Invoke(new object[] { });
@@ -23,6 +28,11 @@ namespace kontur_project
 
         public bool NeedToExecute(Message message)
         {
+            if (message.Text == null)
+            {
+                MessageManager.MessageOutput(message.Chat.Id, "иди нахуй со своими стикерами аутист");
+                return false;
+            }
             return true;
         }
     }
