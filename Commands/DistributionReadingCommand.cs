@@ -13,7 +13,7 @@ namespace kontur_project
             var ctor = currType.GetConstructor(new Type[] { });
             var currDistr = (Distribution)ctor.Invoke(new object[] { });
             var num = currType.GetProperty("ParamNum").GetValue(currDistr);
-            AppSettings.BotUsers[message.Chat.Id].Distribution.Add(currDistr);
+            AppSettings.BotUsers[message.Chat.Id].Distributions.Add(currDistr);
 
             MessageManager.MessageOutput(
                 chatId: message.Chat.Id,

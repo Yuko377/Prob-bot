@@ -6,14 +6,14 @@ namespace kontur_project
     {
         public long UserId { get; set; }
         public Stack<ICondition> UserConditions { get; set; }
-        public List<Distribution> Distribution { get; set; }
+        public List<Distribution> Distributions { get; set; }
         public List<string> Methods { get; set; }
         public List<double[]> Args { get; set; }
 
         public BotUser(long userId)
         {
             UserId = userId;
-            Distribution = new List<Distribution>();
+            Distributions = new List<Distribution>();
             Methods = new List<string>();
             Args = new List<double[]>();
             UserConditions = new Stack<ICondition>();

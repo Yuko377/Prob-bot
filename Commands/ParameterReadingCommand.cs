@@ -22,7 +22,7 @@ namespace kontur_project
                 return false;
             }
 
-            var currDistribution = AppSettings.BotUsers[currId].Distribution.Last();
+            var currDistribution = AppSettings.BotUsers[currId].Distributions.Last();
             var paramsTrubles = currDistribution.CheckParamsValid(currParams);
             if (paramsTrubles != null)
             {
@@ -36,21 +36,31 @@ namespace kontur_project
             currDistribution.distParams = currParams;
             return true;
         }
-
+        
         public void Execute(Message message, string text)
         {
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodWaitingCondition());
-            var currMethods = AppSettings.AvailableMethods;
+            var disrtibutionType = AppSettings.BotUsers[message.Chat.Id].Distributions.Last().GetType();
+            var currMethods = disrtibutionType.GetMethods();
             var listForInlineKb = new List<List<InlineKeyboardButton>>();
-            foreach (var method in currMethods.Keys)//по названиям методов
+            foreach(var method in currMethods)
             {
-                listForInlineKb.Add(
+                var methodAttrs = method.GetCustomAttributes(true);// true чтобы учитывались аттрибуты классов-родителей
+                var methodName = string.Empty;
+                foreach(var attr in methodAttrs)
+                {
+                    if (attr.GetType() == typeof(NameMethodAttribute))
+                        methodName = attr.ToString();
+                }
+
+                if(methodName != string.Empty)
+                    listForInlineKb.Add(
                     new List<InlineKeyboardButton>()
                     {
-                        InlineKeyboardButton.WithCallbackData(method, "method." + currMethods[method]),
+                        InlineKeyboardButton.WithCallbackData(methodName, "method." + method.Name),
                     });
             }
-
+            
             var methodsKeyboard = new InlineKeyboardMarkup(listForInlineKb);
             MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
