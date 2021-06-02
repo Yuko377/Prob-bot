@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj": {}
+    "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj": {
+    "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
+        "projectUniqueName": "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
         "projectName": "kontur_project",
-        "projectPath": "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
-        "packagesPath": "C:\\Users\\компуктер\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\obj\\",
+        "projectPath": "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
+        "packagesPath": "C:\\Users\\taras\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\компуктер\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\taras\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -43,6 +40,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Microsoft.CodeAnalysis.CSharp.Scripting": {
+              "target": "Package",
+              "version": "[3.9.0, )"
+            },
             "Telegram.Bot": {
               "target": "Package",
               "version": "[15.7.1, )"
@@ -63,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
