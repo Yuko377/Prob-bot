@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 
@@ -9,7 +10,8 @@ namespace kontur_project
 {
     public static class AppSettings
     {
-        public static Dictionary<string, Type> Repository = new RepositoryGetter().GetRepository();
+        public static Dictionary<long, Dictionary<string, Type>> Repository =
+            new Dictionary<long, Dictionary<string, Type>>();
 
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();
         public static string Name { get; set; } = "<BOT_NAME>";
@@ -58,7 +60,14 @@ namespace kontur_project
 
             foreach(var textDistribution in textDistributions)
             {
-                var script = CSharpScript.Create(textDistribution, ScriptOptions.Default.WithReferences(Assembly.GetExecutingAssembly()));
+                var path = Assembly.GetAssembly(typeof(Distribution)).Location;
+                var asm = AssemblyMetadata.CreateFromFile(path).GetReference();
+
+                var options = ScriptOptions.Default.AddReferences(asm);
+                //
+                //var options = ScriptOptions.Default.AddImports(typeof(Distribution).Assembly).AddReferences(Assembly.GetExecutingAssembly());
+
+                var script = CSharpScript.Create(textDistribution, options);
                 var distType = (Type)script.RunAsync().Result.ReturnValue;
 
                 var constr = distType.GetConstructor(new Type[] { });

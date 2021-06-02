@@ -1,3 +1,6 @@
+using kontur_project;
+using System;
+
 class UniformDistribution : Distribution
 {
     public override long Id { get; set; }

@@ -2,7 +2,7 @@
 
 namespace kontur_project
 {
-    static class MathMethods
+    public static class MathMethods
     {
         public static double Integral(double a, double b, Func<double, double> f)
         {

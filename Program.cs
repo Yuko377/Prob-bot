@@ -33,6 +33,7 @@ namespace kontur_project
             if (!(AppSettings.BotUsers.ContainsKey(messageId)))
             {
                 AppSettings.BotUsers.Add(messageId, new BotUser(messageId));
+                AppSettings.Repository[message.Chat.Id] = new RepositoryGetter().GetRepository();
             }
 
             var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();

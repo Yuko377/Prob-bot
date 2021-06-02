@@ -9,7 +9,7 @@ namespace kontur_project
 
         public void Execute(Message message, string key)// из словаря распределений из настроек берёт нужное по названию
         {
-            var currType = AppSettings.Repository[key];
+            var currType = AppSettings.Repository[message.Chat.Id][key];
             var ctor = currType.GetConstructor(new Type[] { });
             var currDistr = (Distribution)ctor.Invoke(new object[] { });
             var num = currType.GetProperty("ParamNum").GetValue(currDistr);

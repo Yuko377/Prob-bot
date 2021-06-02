@@ -1,8 +1,9 @@
 ﻿using System;
+
 namespace kontur_project
 {
     [AttributeUsage(AttributeTargets.Method)]
-    class NameMethodAttribute: Attribute
+    public class NameMethodAttribute: Attribute
     {
         public readonly string methodName;
 
