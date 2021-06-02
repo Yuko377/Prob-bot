@@ -1,0 +1,34 @@
+public class ExpDistribution : Distribution
+{
+    public override long Id { get; set; }
+    public override int ParamNum { get => 1; }
+    public override string Name => "Показательное";
+    public override double[] distParams { get; set; }
+
+    public override double Density(double x)
+    {
+        if (x <= 0)
+            return 0;
+        else
+            return distParams[0] * Math.Exp(-distParams[0] * x);
+    }
+
+    public override double ProbabilityFunction(double x)
+    {
+        if (x <= 0)
+            return 0;
+        else
+            return 1 - Math.Exp(-distParams[0] * x);
+    }
+
+    public override string CheckParamsValid(params double[] parametres)
+    {
+        var answer = BaseParamsCheking(parametres);
+
+        if (parametres[0] < 0)
+            answer = "Параметр интенсивности должен быть неотрицательным";
+
+        return answer;
+    }
+}
+return typeof(ExpDistribution);
