@@ -45,7 +45,6 @@ namespace kontur_project
             {
                 using StreamReader sr = new StreamReader(fileName);
                 var text = sr.ReadToEnd();
-                var text += 
                 asw.Add(text);
             }
 
@@ -55,7 +54,7 @@ namespace kontur_project
 
     internal class RepositoryGetter
     {
-        internal Dictionary<string, Type> GetRepository()
+        internal Dictionary<string, Type> GetRepository(string[] distributions)
         {
             var distributionsDirectory = DirectoryWalker.GetDistributionsDirectory();
             var textDistributions = DirectoryWalker.GetDistributionsInside(distributionsDirectory);
