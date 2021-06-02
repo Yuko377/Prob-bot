@@ -4705,23 +4705,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\компуктер\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\taras\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
+      "projectUniqueName": "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
       "projectName": "kontur_project",
-      "projectPath": "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
-      "packagesPath": "C:\\Users\\компуктер\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\компуктер\\Documents\\GitHub\\Prob-bot\\obj\\",
+      "projectPath": "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\kontur_project.csproj",
+      "packagesPath": "C:\\Users\\taras\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\taras\\Documents\\GitHub\\Prob-bot\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\компуктер\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\taras\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4767,7 +4763,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
       }
     }
   }
