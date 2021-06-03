@@ -1,5 +1,3 @@
-using kontur_project;
-using System;
 
 class NormalDistribution : Distribution
 {

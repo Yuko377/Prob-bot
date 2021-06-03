@@ -1,5 +1,3 @@
-using kontur_project;
-using System;
 
 public class ExpDistribution : Distribution
 {

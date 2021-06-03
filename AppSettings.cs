@@ -10,29 +10,28 @@ namespace kontur_project
 {
     public static class AppSettings
     {
-        public static Dictionary<long, Dictionary<string, Type>> Repository =
-            new Dictionary<long, Dictionary<string, Type>>();
+        public static Dictionary<long, Dictionary<string, Type>> Repository = new ();
 
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();
         public static string Name { get; set; } = "<BOT_NAME>";
         public static string Key { get; } = MessageManager.GetMessage("API_key");
     }
     
-    internal static class DirectoryWalker
+    internal class DirectoryWalker
     {
         internal static string GetDistributionsDirectory()
         {
-            var cerrentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = Directory.GetCurrentDirectory();
 
             for(var i = 0; i < 3; i++)
-                cerrentDirectory = Path.GetDirectoryName(cerrentDirectory);
+                currentDirectory = Path.GetDirectoryName(currentDirectory);
             
-            var filePath = Path.Combine(cerrentDirectory, "Distributions");
+            var filePath = Path.Combine(currentDirectory, "Distributions");
 
             return filePath;
         }
 
-        internal static string[] GetDistributionsInside(string path)
+        internal string[] GetDistributionsInside(string path)
         {
             var filesNames = Directory.GetFiles(path);
 
@@ -54,7 +53,7 @@ namespace kontur_project
         internal Dictionary<string, Type> GetRepository()
         {
             var distributionsDirectory = DirectoryWalker.GetDistributionsDirectory();
-            var textDistributions = DirectoryWalker.GetDistributionsInside(distributionsDirectory);
+            var textDistributions = new DirectoryWalker().GetDistributionsInside(distributionsDirectory);
 
             var repository = new Dictionary<string, Type>();
 
@@ -63,12 +62,10 @@ namespace kontur_project
                 var path = Assembly.GetAssembly(typeof(Distribution)).Location;
                 var asm = AssemblyMetadata.CreateFromFile(path).GetReference();
 
-                var options = ScriptOptions.Default.AddReferences(asm);
-                //
-                //var options = ScriptOptions.Default.AddImports(typeof(Distribution).Assembly).AddReferences(Assembly.GetExecutingAssembly());
-
+                var options = ScriptOptions.Default.AddImports("System", "kontur_project").AddReferences(asm);
                 var script = CSharpScript.Create(textDistribution, options);
                 var distType = (Type)script.RunAsync().Result.ReturnValue;
+
 
                 var constr = distType.GetConstructor(new Type[] { });
                 var currDist = (Distribution)constr.Invoke(new object[] { });
