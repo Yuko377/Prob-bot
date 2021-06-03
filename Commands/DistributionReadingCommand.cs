@@ -9,7 +9,7 @@ namespace kontur_project
 
         public void Execute(Message message, string key)// из словаря распределений из настроек берёт нужное по названию
         {
-            if (!AppSettings.Repository.ContainsKey(key))
+            if (!AppSettings.Repository[message.Chat.Id].ContainsKey(key))
             {
                 MessageManager.MessageOutput(message.Chat.Id, "Выбери распределение из предложенных или введи его вручную");
                 return;
