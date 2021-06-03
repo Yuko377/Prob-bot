@@ -44,7 +44,7 @@ namespace kontur_project
 
             try
             {
-                foreach (var command in currCondition.Commands)
+                foreach (var command in currCondition.Commands)//////////////////////
                 {
                     if (command.NeedToExecute(message))
                     {
@@ -60,11 +60,11 @@ namespace kontur_project
             }
         }
 
-        private static async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)
+        private static async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)// async
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
 
-            await Bot.botClient.AnswerCallbackQueryAsync(
+            await Bot.botClient.AnswerCallbackQueryAsync(// await
                 callbackQueryId: callbackQuery.Id,
                 text: $"Received {callbackQuery.Data}");
 
@@ -75,7 +75,7 @@ namespace kontur_project
             
             try
             {
-                foreach (var command in currCondition.Commands)
+                foreach (var command in currCondition.Commands)///////////////
                 {
                     if (command.NeedToExecute(message))
                     {
