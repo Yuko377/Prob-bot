@@ -9,6 +9,12 @@ namespace kontur_project
 
         public bool NeedToExecute(Message message)
         {
+            var txt = message.Text;
+            if (txt == null)
+            {
+                MessageManager.MessageOutput(message.Chat.Id, "Стикеры не пройдут");
+                return false;
+            }
             return true;
         }
 
@@ -27,6 +33,11 @@ namespace kontur_project
                 tempCmd.Execute(message, text);
 
             }
+            else
+            {
+                MessageManager.MessageOutput(message.Chat.Id, "Похоже, не т");
+            }
+
         }
     }
 }

@@ -8,6 +8,9 @@ namespace kontur_project
     {
         public static double[] Parse(string text)
         {
+            if (text == null)
+                return null;
+
             var currParams = text.Split(' ').Where(x => x != "").ToArray();
 
             var doubleParams = new List<double>(currParams.Length);
