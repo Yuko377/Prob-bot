@@ -22,12 +22,6 @@ namespace kontur_project
         public void Execute(Message message, string methodName)
         {
             var currMethod = AppSettings.BotUsers[message.Chat.Id].Distributions.Last().GetType().GetMethod(methodName);
-            
-            if (!MessageManager.IsItCorrect(currMethod))
-            {
-                MessageManager.MessageOutput(message.Chat.Id, "не надо так");
-                return;
-            }
 
             int argNum = currMethod.GetParameters().Length;
 

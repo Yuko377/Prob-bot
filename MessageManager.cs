@@ -20,10 +20,10 @@ namespace kontur_project
             return message;
         }
 
-        public static bool IsItCorrect(object text, ICollection<string> map = null )
+        public static bool IsItCorrect(string text, ICollection<string> map = null )
         {
             if (map != null)
-                return map.Contains((string)text);
+                return map.Contains(text);
 
             return text != null;
         }

@@ -41,14 +41,21 @@ namespace kontur_project
             {
                 currCondition = new StartCondition();
             }
-
-            foreach (var command in currCondition.Commands)
+            try
             {
-                if (command.NeedToExecute(message))
+                foreach (var command in currCondition.Commands)
                 {
-                    command.Execute(message, message.Text);
-                    break;
+                    if (command.NeedToExecute(message))
+                    {
+                        command.Execute(message, message.Text);
+                        break;
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"пользователь {messageId} вызвал исключение:\n{ex.Message}");
+                MessageManager.MessageOutput(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }
 
