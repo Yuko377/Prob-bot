@@ -1,4 +1,5 @@
 
+[ParametersDescription("начало и конец отрезка соответственно")]
 class UniformDistribution : Distribution
 {
     public override long Id { get; set; }

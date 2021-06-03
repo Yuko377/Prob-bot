@@ -1,4 +1,5 @@
 
+[ParametersDescription("матожидание и дисперсию соответственно")]
 class NormalDistribution : Distribution
 {
     public override long Id { get; set; }

@@ -2,6 +2,7 @@
 using System.Threading;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
@@ -17,6 +18,14 @@ namespace kontur_project
             var message = sr.ReadToEnd();
             
             return message;
+        }
+
+        public static bool IsItCorrect(string text, ICollection<string> map = null )
+        {
+            if (map != null)
+                return map.Contains(text);
+
+            return text != null;
         }
 
         public static async void MessageOutput(

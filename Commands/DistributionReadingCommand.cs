@@ -7,13 +7,15 @@ namespace kontur_project
     {
         public string Name => throw new NotImplementedException();
 
-        public void Execute(Message message, string key)// из словаря распределений из настроек берёт нужное по названию
+        public void Execute(Message message, string key)
         {
-            if (!AppSettings.Repository[message.Chat.Id].ContainsKey(key))
+            var keys = AppSettings.Repository[message.Chat.Id].Keys;
+            if (!MessageManager.IsItCorrect(key, keys))
             {
                 MessageManager.MessageOutput(message.Chat.Id, "Выбери распределение из предложенных или введи его вручную");
                 return;
             }
+
             var currType = AppSettings.Repository[message.Chat.Id][key];
             
             var ctor = currType.GetConstructor(new Type[] { });
@@ -21,19 +23,32 @@ namespace kontur_project
             var num = currType.GetProperty("ParamNum").GetValue(currDistr);
             AppSettings.BotUsers[message.Chat.Id].Distributions.Add(currDistr);
 
+            var text = $"Ты выбрал {key.ToLower()} распределение, введи {num} параметр(a) через пробел.";
+
+            var currAttributes = currDistr.GetType().GetCustomAttributes(false);
+            foreach (var attr in currAttributes)
+            {
+                if (attr.GetType() == typeof(ParametersDescriptionAttribute))
+                {
+                    text += "\n"+attr.ToString();
+                    break;
+                }
+            }
+
             MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
-                text: $"Ты выбрал {key.ToLower()} распределение, введи {num} параметр(a) через пробел.");
+                text: text);
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionParamsWaitingCondition());
         }
 
         public bool NeedToExecute(Message message)
         {
-            if (message.Text == null)
+            if (!MessageManager.IsItCorrect(message.Text))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "иди нахуй со своими стикерами аутист");
+                MessageManager.MessageOutput(message.Chat.Id, "распределение, а не стикер...");
                 return false;
             }
+            
             return true;
         }
     }

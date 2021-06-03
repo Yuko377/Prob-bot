@@ -10,9 +10,9 @@ namespace kontur_project
         public bool NeedToExecute(Message message)
         {
             var txt = message.Text;
-            if (txt == null)
+            if (!MessageManager.IsItCorrect(message.Text))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "Стикеры не пройдут");
+                MessageManager.MessageOutput(message.Chat.Id, "смешно.");
                 return false;
             }
             return true;
@@ -20,6 +20,9 @@ namespace kontur_project
 
         public void Execute(Message message, string text)
         {
+            if (!MessageManager.IsItCorrect(message.Text))
+                MessageManager.MessageOutput(message.Chat.Id, "Похоже, не то");
+
             if (text == "changeMethod")
             {
                 var tempCmd = new ParameterReadingCommand();
@@ -33,11 +36,6 @@ namespace kontur_project
                 tempCmd.Execute(message, text);
 
             }
-            else
-            {
-                MessageManager.MessageOutput(message.Chat.Id, "Похоже, не т");
-            }
-
         }
     }
 }

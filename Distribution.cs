@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace kontur_project
 { 
     public abstract class Distribution
@@ -19,5 +21,10 @@ namespace kontur_project
 
         public string BaseParamsCheking(params double[] parametres)
             => parametres.Length != ParamNum ? "Число параметров не соответствует распределению" : null;
+
+        internal bool GetCustomAttributes(bool v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
