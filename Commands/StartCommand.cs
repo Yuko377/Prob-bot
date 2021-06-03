@@ -23,7 +23,7 @@ namespace kontur_project
 
         public void Execute(Message message, string text)
         {
-            SendDistributionKeyboard(message, AppSettings.Repository);
+            SendDistributionKeyboard(message, new RepositoryGetter().GetRepository());
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionWaitingCondition());
         }
 

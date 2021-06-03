@@ -43,8 +43,10 @@ C:\Users\taras\Documents\GitHub\Prob-bot\bin\Debug\net5.0\kontur_project.runtime
 C:\Users\taras\Documents\GitHub\Prob-bot\bin\Debug\net5.0\kontur_project.dll
 C:\Users\taras\Documents\GitHub\Prob-bot\bin\Debug\net5.0\ref\kontur_project.dll
 C:\Users\taras\Documents\GitHub\Prob-bot\bin\Debug\net5.0\kontur_project.pdb
+
 C:\Users\taras\Documents\GitHub\Prob-bot\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Users\taras\Documents\GitHub\Prob-bot\bin\Debug\net5.0\Telegram.Bot.dll
+
 C:\Users\taras\Documents\GitHub\Prob-bot\obj\Debug\net5.0\kontur_project.csprojAssemblyReference.cache
 C:\Users\taras\Documents\GitHub\Prob-bot\obj\Debug\net5.0\kontur_project.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\taras\Documents\GitHub\Prob-bot\obj\Debug\net5.0\kontur_project.AssemblyInfoInputs.cache
