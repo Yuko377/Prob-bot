@@ -1,4 +1,5 @@
 
+[ParametersDescription("сдвиг и масштаб соответственно")]
 class CauchyDistribution : Distribution
 {
     public override long Id { get; set; }

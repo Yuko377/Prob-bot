@@ -23,9 +23,21 @@ namespace kontur_project
             var num = currType.GetProperty("ParamNum").GetValue(currDistr);
             AppSettings.BotUsers[message.Chat.Id].Distributions.Add(currDistr);
 
+            var text = $"Ты выбрал {key.ToLower()} распределение, введи {num} параметр(a) через пробел.";
+
+            var currAttributes = currDistr.GetType().GetCustomAttributes(false);
+            foreach (var attr in currAttributes)
+            {
+                if (attr.GetType() == typeof(ParametersDescriptionAttribute))
+                {
+                    text += "\n"+attr.ToString();
+                    break;
+                }
+            }
+
             MessageManager.MessageOutput(
                 chatId: message.Chat.Id,
-                text: $"Ты выбрал {key.ToLower()} распределение, введи {num} параметр(a) через пробел.");
+                text: text);
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionParamsWaitingCondition());
         }
 

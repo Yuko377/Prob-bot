@@ -1,4 +1,5 @@
 
+[ParametersDescription("параметр - интенсивность")]
 public class ExpDistribution : Distribution
 {
     public override long Id { get; set; }

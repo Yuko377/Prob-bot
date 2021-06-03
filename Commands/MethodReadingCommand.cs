@@ -23,6 +23,12 @@ namespace kontur_project
         {
             var currMethod = AppSettings.BotUsers[message.Chat.Id].Distributions.Last().GetType().GetMethod(methodName);
 
+            if(currMethod == null)
+            {
+                MessageManager.MessageOutput(message.Chat.Id, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
+                return;
+            }
+
             int argNum = currMethod.GetParameters().Length;
 
             if (argNum == 0)
