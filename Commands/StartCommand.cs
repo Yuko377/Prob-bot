@@ -13,6 +13,7 @@ namespace kontur_project
         {
             if (message.Type != Telegram.Bot.Types.Enums.MessageType.Text)
                 return false;
+
             if (!message.Text.Contains(this.Name))
             {
                 MessageManager.MessageOutput(message.Chat.Id, "Введи /start для начала работы");

@@ -58,8 +58,7 @@ namespace kontur_project
 
             await Bot.botClient.AnswerCallbackQueryAsync(
                 callbackQueryId: callbackQuery.Id,
-                text: $"Received {callbackQuery.Data}"
-            );
+                text: $"Received {callbackQuery.Data}");
 
             var messageId = callbackQuery.Message.Chat.Id;
             var message = callbackQuery.Message;

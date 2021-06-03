@@ -10,22 +10,25 @@ namespace kontur_project
 
         public bool NeedToExecute(Message message)
         {
-            if (message.Text == null)
+            if (!MessageManager.IsItCorrect(message.Text))
             {
                 MessageManager.MessageOutput(message.Chat.Id, "Я просил метод, а не стикер :)");
                 return false;
             }
+
             return true;
         }
 
         public void Execute(Message message, string methodName)
         {
             var currMethod = AppSettings.BotUsers[message.Chat.Id].Distributions.Last().GetType().GetMethod(methodName);
-            if (currMethod == null)
+            
+            if (!MessageManager.IsItCorrect(currMethod))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "что ты делаешь чудо");
+                MessageManager.MessageOutput(message.Chat.Id, "не надо так");
                 return;
             }
+
             int argNum = currMethod.GetParameters().Length;
 
             if (argNum == 0)
@@ -35,7 +38,6 @@ namespace kontur_project
                 AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodArgsWaitingCondition());
                 var tempCmd = new MethodArgsWaitingCommand();
                 tempCmd.Execute(message, "owo");
-
             }
             else
             {
