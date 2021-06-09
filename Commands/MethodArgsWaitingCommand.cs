@@ -7,11 +7,9 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
 {
-    public class MethodArgsWaitingCommand : ICommand
+    public class MethodArgsWaitingCommand : Command
     {
-        public string Name => throw new NotImplementedException();//чёт хреново это
-
-        public bool NeedToExecute(Message message)
+        public override bool NeedToExecute(Message message)
         {
             if (message.ReplyMarkup != null)
                 return false;
@@ -30,7 +28,7 @@ namespace kontur_project
             var currArgs = InputsParser.Parse(message.Text);
             if (currArgs == null)
             {
-                MessageManager.MessageOutput(
+                ExecutorBot.SendTextMessage(
                     chatId: currId,
                     text: "Не удалось распознать параметры, попробуй еще раз");
 
@@ -39,7 +37,7 @@ namespace kontur_project
 
             if (currArgs.Length != argNum)
             {
-                MessageManager.MessageOutput(
+                ExecutorBot.SendTextMessage(
                     chatId: currId,
                     text: "Число параметров не соответствует методу");
 
@@ -51,7 +49,7 @@ namespace kontur_project
             return true;
         }
 
-        public void Execute(Message message, string text)
+        public override void Execute(Message message, string text)
         {
             long currId = message.Chat.Id;
 
@@ -80,10 +78,12 @@ namespace kontur_project
 
             var changesKeyboard = new InlineKeyboardMarkup(listForInlineKb);
 
-            MessageManager.MessageOutput(
-                chatId: currId,
-                text: result.ToString(),
-                replyMarkup: changesKeyboard);
+            //ExecutorBot.SendTextMessage(
+            //    chatId: currId,
+            //    text: result.ToString(),
+            //    replyMarkup: changesKeyboard);
+
+            ExecutorBot.SendTextMessage(currId, result.ToString(), changesKeyboard);
         }
     }
 }

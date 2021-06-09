@@ -4,46 +4,46 @@ namespace kontur_project
 {
     public interface ICondition
     {
-        public List<ICommand> Commands { get; }
+        public List<Command> Commands { get; }
     }
 
     public class StartCondition : ICondition
     {
-        public List<ICommand> Commands
+        public List<Command> Commands
         {
-            get { return new List<ICommand> {new StartCommand()}; }
+            get { return new List<Command> {new StartCommand()}; }
         }
     }
 
     public class DistributionWaitingCondition : ICondition
     {
-        public List<ICommand> Commands
+        public List<Command> Commands
         {
-            get { return new List<ICommand> { new DistributionReadingCommand() }; }
+            get { return new List<Command> { new DistributionReadingCommand() }; }
         }
     }
 
     public class DistributionParamsWaitingCondition : ICondition
     {
-        public List<ICommand> Commands
+        public List<Command> Commands
         {
-            get { return new List<ICommand> { new ParameterReadingCommand() }; }
+            get { return new List<Command> { new ParameterReadingCommand() }; }
         }
     }
 
     public class MethodWaitingCondition : ICondition
     {
-        public List<ICommand> Commands
+        public List<Command> Commands
         {
-            get { return new List<ICommand> { new MethodReadingCommand() }; }
+            get { return new List<Command> { new MethodReadingCommand() }; }
         }
     }
 
     public class MethodArgsWaitingCondition : ICondition
     {
-        public List<ICommand> Commands
+        public List<Command> Commands
         {
-            get { return new List<ICommand> { new MethodArgsWaitingCommand(), new ChangesCommand(), }; }
+            get { return new List<Command> { new MethodArgsWaitingCommand(), new ChangesCommand(), }; }
         }
     }
 }

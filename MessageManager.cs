@@ -13,10 +13,5 @@ namespace kontur_project
 
             return text != null;
         }
-
-        public static async void MessageOutput(ChatId chatId, string text, InlineKeyboardMarkup replyMarkup=default)
-        {
-            await Bot.botClient.SendTextMessageAsync(chatId, text, replyMarkup: replyMarkup);
-        }
     }
 }

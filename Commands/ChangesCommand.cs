@@ -3,25 +3,23 @@ using Telegram.Bot.Types;
 
 namespace kontur_project
 {
-    public class ChangesCommand : ICommand
+    public class ChangesCommand : Command
     {
-        public string Name => throw new NotImplementedException();
-
-        public bool NeedToExecute(Message message)
+        public override bool NeedToExecute(Message message)
         {
             var txt = message.Text;
             if (!MessageManager.IsItCorrect(message.Text))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "смешно.");
+                ExecutorBot.SendTextMessage(message.Chat.Id, "смешно.");
                 return false;
             }
             return true;
         }
 
-        public void Execute(Message message, string text)
+        public override void Execute(Message message, string text)
         {
             if (!MessageManager.IsItCorrect(message.Text))
-                MessageManager.MessageOutput(message.Chat.Id, "Похоже, не то");
+                ExecutorBot.SendTextMessage(message.Chat.Id, "Похоже, не то");
 
             if (text == "changeMethod")
             {

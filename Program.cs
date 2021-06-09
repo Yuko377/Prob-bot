@@ -13,19 +13,25 @@ namespace kontur_project
         {
             var myBot = new Bot();
 
-            var me = await Bot.botClient.GetMeAsync();
-            Console.Title = me.Username;
+            //var me = await myBot.botClient.GetMeAsync();
+            //Console.Title = me.Username;
 
 
-            Bot.botClient.OnMessage += BotOnMessageReceived;
-            Bot.botClient.OnCallbackQuery += BotOnCallbackQueryReceived;
+            //Bot.botClient.OnMessage += BotOnMessageReceived;
+            //Bot.botClient.OnCallbackQuery += BotOnCallbackQueryReceived;
 
-            Bot.botClient.StartReceiving(Array.Empty<UpdateType>());
-            Console.WriteLine($"Start listening for @{me.Username}");
+            //Bot.botClient.StartReceiving(Array.Empty<UpdateType>());
+            //Console.WriteLine($"Start listening for @{me.Username}");
 
+            //Console.ReadLine();
+            //Bot.botClient.StopReceiving();
+            Command.ExecutorBot = myBot;
+
+            myBot.StartWork();
+            Console.WriteLine($"Start listening for master");
             Console.ReadLine();
-            Bot.botClient.StopReceiving();
-        }
+            myBot.StopWork();
+            
 
         private static void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)// async?
         {
@@ -64,13 +70,7 @@ namespace kontur_project
             }
         }
 
-        private static async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)// async
-        {
-            var callbackQuery = callbackQueryEventArgs.CallbackQuery;
 
-            await Bot.botClient.AnswerCallbackQueryAsync(// await
-                callbackQueryId: callbackQuery.Id,
-                text: $"Received {callbackQuery.Data}");
 
             var messageId = callbackQuery.Message.Chat.Id;
             var message = callbackQuery.Message;
@@ -97,36 +97,6 @@ namespace kontur_project
                 MessageManager.MessageOutput(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }
-
-        #region Inline Mode
-
-        private static async void BotOnInlineQueryReceived(object sender, InlineQueryEventArgs inlineQueryEventArgs)
-        {
-            Console.WriteLine($"Received inline query from: {inlineQueryEventArgs.InlineQuery.From.Id}");
-
-            InlineQueryResultBase[] results = {
-                new InlineQueryResultArticle(
-                    id: "3",
-                    title: "TgBots",
-                    inputMessageContent: new InputTextMessageContent(
-                        "hello"
-                    )
-                )
-            };
-            await Bot.botClient.AnswerInlineQueryAsync(
-                inlineQueryId: inlineQueryEventArgs.InlineQuery.Id,
-                results: results,
-                isPersonal: true,
-                cacheTime: 0
-            );
-        }
-
-        private static void BotOnChosenInlineResultReceived(object sender, ChosenInlineResultEventArgs chosenInlineResultEventArgs)
-        {
-            Console.WriteLine($"Received inline result: {chosenInlineResultEventArgs.ChosenInlineResult.ResultId}");
-        }
-
-        #endregion
 
         private static void BotOnReceiveError(object sender, ReceiveErrorEventArgs receiveErrorEventArgs)
         {
