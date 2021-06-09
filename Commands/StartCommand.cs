@@ -5,27 +5,27 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
 {
-    public class StartCommand : ICommand
+    public class StartCommand : Command
     {
         public string Name => @"/start";
 
-        public bool NeedToExecute(Message message)
+        public override bool NeedToExecute(Message message)
         {
             if (message.Type != Telegram.Bot.Types.Enums.MessageType.Text)
                 return false;
 
-            if (!message.Text.Contains(this.Name))
+            if (!message.Text.Contains("/start"))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "Введи /start для начала работы");
+                ExecutorBot.SendTextMessage(message.Chat.Id, "Привет, "+ message.From.FirstName+ "! Введи /start для начала работы");
             }
 
             return message.Text.Contains(this.Name);
         }
 
-        public void Execute(Message message, string text)
+        public override void Execute(Message message, string text)
         {
             SendDistributionKeyboard(message, new RepositoryGetter().GetRepository());
-            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionWaitingCondition());
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new DistributionWaitingCondition());
         }
 
         static void SendDistributionKeyboard(Message message, Dictionary<string, Type> repository)
@@ -41,10 +41,8 @@ namespace kontur_project
             }
 
             var distributionKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-            MessageManager.MessageOutput(
-                chatId: message.Chat.Id,
-                text: "Выбери распределение",
-                replyMarkup: distributionKeyboard);
+
+            ExecutorBot.SendTextMessage(message.Chat.Id, "Выбери распределение", distributionKeyboard);
         }
     }
 }

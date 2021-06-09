@@ -5,7 +5,7 @@ namespace kontur_project
     public class BotUser
     {
         public long UserId { get; set; }
-        public Stack<ICondition> UserConditions { get; set; }
+        public List<ICondition> UserConditions { get; set; }
         public List<Distribution> Distributions { get; set; }
         public List<string> Methods { get; set; }
         public List<double[]> Args { get; set; }
@@ -16,8 +16,8 @@ namespace kontur_project
             Distributions = new List<Distribution>();
             Methods = new List<string>();
             Args = new List<double[]>();
-            UserConditions = new Stack<ICondition>();
-            UserConditions.Push(new StartCondition());
+            UserConditions = new List<ICondition>();
+            UserConditions.Add(new StartCondition());
         }
     }
 }

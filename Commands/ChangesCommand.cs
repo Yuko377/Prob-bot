@@ -1,36 +1,36 @@
-﻿using System;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 
 namespace kontur_project
 {
-    public class ChangesCommand : ICommand
+    public class ChangesCommand : Command
     {
-        public string Name => throw new NotImplementedException();
+        private const string change = "changeMethod";
+        private const string start = "ToStart";
 
-        public bool NeedToExecute(Message message)
+        public override bool NeedToExecute(Message message)
         {
             var txt = message.Text;
-            if (!MessageManager.IsItCorrect(message.Text))
+            if (!MessageManager.IsMessageCorrect(message.Text))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "смешно.");
+                ExecutorBot.SendTextMessage(message.Chat.Id, "смешно.");
                 return false;
             }
             return true;
         }
 
-        public void Execute(Message message, string text)
+        public override void Execute(Message message, string text)
         {
-            if (!MessageManager.IsItCorrect(message.Text))
-                MessageManager.MessageOutput(message.Chat.Id, "Похоже, не то");
+            if (!MessageManager.IsMessageCorrect(message.Text))
+                ExecutorBot.SendTextMessage(message.Chat.Id, "Похоже, не то");
 
-            if (text == "changeMethod")
+            if (text == change)
             {
                 var tempCmd = new ParameterReadingCommand();
                 tempCmd.Execute(message, text);
 
             }
 
-            if (text == "ToStart")
+            if (text == start)
             {
                 var tempCmd = new StartCommand();
                 tempCmd.Execute(message, text);

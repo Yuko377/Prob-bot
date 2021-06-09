@@ -14,30 +14,18 @@ namespace kontur_project
 
         public static Dictionary<long, BotUser> BotUsers = new Dictionary<long, BotUser>();
         public static string Name { get; set; } = "<BOT_NAME>";
-        public static string Key { get; } = MessageManager.GetMessage("API_key");
+        public static string Key { get; } = FileManager.ReadFile(FileManager.GetAPIKeyPath());
     }
-    
-    internal class DirectoryWalker
+
+    internal class RepositoryGetter
     {
-        internal static string GetDistributionsDirectory()
-        {
-            var currentDirectory = Directory.GetCurrentDirectory();
-
-            for(var i = 0; i < 3; i++)
-                currentDirectory = Path.GetDirectoryName(currentDirectory);
-            
-            var filePath = Path.Combine(currentDirectory, "Distributions");
-
-            return filePath;
-        }
-
-        internal string[] GetDistributionsInside(string path)
+        private string[] GetDistributionsInside(string path)
         {
             var filesNames = Directory.GetFiles(path);
 
             var asw = new List<string>();
 
-            foreach(var fileName in filesNames)
+            foreach (var fileName in filesNames)
             {
                 using StreamReader sr = new StreamReader(fileName);
                 var text = sr.ReadToEnd();
@@ -46,14 +34,11 @@ namespace kontur_project
 
             return asw.ToArray();
         }
-    }
 
-    internal class RepositoryGetter
-    {
         internal Dictionary<string, Type> GetRepository()
         {
-            var distributionsDirectory = DirectoryWalker.GetDistributionsDirectory();
-            var textDistributions = new DirectoryWalker().GetDistributionsInside(distributionsDirectory);
+            var distributionsDirectory = FileManager.GetDistributionsDirectory();
+            var textDistributions = GetDistributionsInside(distributionsDirectory);
 
             var repository = new Dictionary<string, Type>();
 

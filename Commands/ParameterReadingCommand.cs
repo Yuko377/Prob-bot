@@ -5,17 +5,17 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
 {
-    public class ParameterReadingCommand : ICommand
+    public class ParameterReadingCommand : Command
     {
         public string Name => "param_cmd";
 
-        public bool NeedToExecute(Message message)
+        public override bool NeedToExecute(Message message)
         {
             var currId = message.Chat.Id;
             var currParams = InputsParser.Parse(message.Text);
             if (currParams == null)
             {
-                MessageManager.MessageOutput(
+                ExecutorBot.SendTextMessage(
                     chatId: currId,
                     text: "Не удалось распознать параметры, попробуй еще раз");
 
@@ -23,12 +23,12 @@ namespace kontur_project
             }
 
             var currDistribution = AppSettings.BotUsers[currId].Distributions.Last();
-            var paramsTrubles = currDistribution.CheckParamsValid(currParams);
-            if (paramsTrubles != null)
+            var paramsTroubles = currDistribution.CheckParamsValid(currParams);
+            if (paramsTroubles != null)
             {
-                MessageManager.MessageOutput(
+                ExecutorBot.SendTextMessage(
                     chatId: currId,
-                    text: paramsTrubles);
+                    text: paramsTroubles);
 
                 return false;
             }
@@ -37,9 +37,9 @@ namespace kontur_project
             return true;
         }
         
-        public void Execute(Message message, string text)
+        public override void Execute(Message message, string text)
         {
-            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodWaitingCondition());
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new MethodWaitingCondition());
             var disrtibutionType = AppSettings.BotUsers[message.Chat.Id].Distributions.Last().GetType();
             var currMethods = disrtibutionType.GetMethods();
             var listForInlineKb = new List<List<InlineKeyboardButton>>();
@@ -62,10 +62,8 @@ namespace kontur_project
             }
             
             var methodsKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-            MessageManager.MessageOutput(
-                chatId: message.Chat.Id,
-                text: "Выбери метод",
-                replyMarkup: methodsKeyboard);
+
+            ExecutorBot.SendTextMessage(message.Chat.Id, "Выбери метод", methodsKeyboard);
         }
     }
 }
