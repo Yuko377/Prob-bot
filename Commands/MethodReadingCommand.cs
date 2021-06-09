@@ -27,7 +27,7 @@ namespace kontur_project
             {
                 AppSettings.BotUsers[message.Chat.Id].Methods.Add(methodName);
                 AppSettings.BotUsers[message.Chat.Id].Args.Add(new double[] { });
-                AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodArgsWaitingCondition());
+                AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new MethodArgsWaitingCondition());
                 var tempCmd = new MethodArgsWaitingCommand();
                 tempCmd.Execute(message, "owo");
             }

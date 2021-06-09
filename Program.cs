@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Telegram.Bot.Args;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
@@ -32,41 +33,70 @@ namespace kontur_project
             myBot.StopWork();
             
 
-        }
-
-
-
-
-
-        #region Inline Mode
-
-        //private static async void BotOnInlineQueryReceived(object sender, InlineQueryEventArgs inlineQueryEventArgs)
-        //{
-        //    Console.WriteLine($"Received inline query from: {inlineQueryEventArgs.InlineQuery.From.Id}");
-
-        //    InlineQueryResultBase[] results = {
-        //        new InlineQueryResultArticle(
-        //            id: "3",
-        //            title: "TgBots",
-        //            inputMessageContent: new InputTextMessageContent(
-        //                "hello"
-        //            )
-        //        )
-        //    };
-        //    await Bot.botClient.AnswerInlineQueryAsync(
-        //        inlineQueryId: inlineQueryEventArgs.InlineQuery.Id,
-        //        results: results,
-        //        isPersonal: true,
-        //        cacheTime: 0
-        //    );
-        //}
-
-        private static void BotOnChosenInlineResultReceived(object sender, ChosenInlineResultEventArgs chosenInlineResultEventArgs)
+        private static void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)// async?
         {
-            Console.WriteLine($"Received inline result: {chosenInlineResultEventArgs.ChosenInlineResult.ResultId}");
+            var message = messageEventArgs.Message;
+            var messageId = message.Chat.Id;
+            if (!(AppSettings.BotUsers.ContainsKey(messageId)))
+            {
+                AppSettings.BotUsers.Add(messageId, new BotUser(messageId));
+                AppSettings.Repository[message.Chat.Id] = new RepositoryGetter().GetRepository();
+            }
+
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Last();
+            if (message.Text == "/start")
+            {
+                currCondition = new StartCondition();
+            }
+
+            try
+            {
+                foreach (var command in currCondition.Commands)//////////////////////
+                {
+                    if (command.NeedToExecute(message))
+                    {
+                        command.Execute(message, message.Text);
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var user = AppSettings.BotUsers[message.Chat.Id];
+                string lastCondition = user.UserConditions.Last().ToString();
+                var userName = message.From.FirstName;
+                Logger.WriteError(userName, lastCondition, ex.Message);
+                MessageManager.MessageOutput(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
+            }
         }
 
-        #endregion
+
+
+            var messageId = callbackQuery.Message.Chat.Id;
+            var message = callbackQuery.Message;
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Last();
+
+            
+            try
+            {
+                foreach (var command in currCondition.Commands)///////////////
+                {
+                    if (command.NeedToExecute(message))
+                    {
+                        command.Execute(message, callbackQuery.Data.Split('.')[1]);
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var user = AppSettings.BotUsers[message.Chat.Id];
+                string lastCondition = user.UserConditions.Last().ToString();
+                var userName = message.From.FirstName;
+                Logger.WriteError(userName, lastCondition, ex.Message);
+                MessageManager.MessageOutput(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
+            }
+        }
 
         private static void BotOnReceiveError(object sender, ReceiveErrorEventArgs receiveErrorEventArgs)
         {

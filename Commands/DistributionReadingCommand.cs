@@ -36,7 +36,7 @@ namespace kontur_project
             ExecutorBot.SendTextMessage(
                 chatId: message.Chat.Id,
                 text: text);
-            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionParamsWaitingCondition());
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new DistributionParamsWaitingCondition());
         }
 
         public override bool NeedToExecute(Message message)

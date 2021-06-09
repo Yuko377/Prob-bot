@@ -26,7 +26,7 @@ namespace kontur_project
         public override void Execute(Message message, string text)
         {
             SendDistributionKeyboard(message, new RepositoryGetter().GetRepository());
-            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionWaitingCondition());
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new DistributionWaitingCondition());
         }
 
         static void SendDistributionKeyboard(Message message, Dictionary<string, Type> repository)
