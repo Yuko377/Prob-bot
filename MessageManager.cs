@@ -28,15 +28,15 @@ namespace kontur_project
             return text != null;
         }
 
-        public static async void MessageOutput(
-            ChatId chatId, string text, ParseMode parseMode = ParseMode.Default,
-            bool disableWebPagePreview = false, bool disableNotification = false,
-            int replyToMessageId = 0, IReplyMarkup replyMarkup = null,
-            CancellationToken cancellationToken = default)
-        {
-            await Bot.botClient.SendTextMessageAsync(
-                chatId, text, parseMode,disableWebPagePreview, disableNotification,
-                replyToMessageId, replyMarkup, cancellationToken);
-        }
+        //public static async void MessageOutput(
+        //    ChatId chatId, string text, ParseMode parseMode = ParseMode.Default,
+        //    bool disableWebPagePreview = false, bool disableNotification = false,
+        //    int replyToMessageId = 0, IReplyMarkup replyMarkup = null,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    await Bot.botClient.SendTextMessageAsync(
+        //        chatId, text, parseMode,disableWebPagePreview, disableNotification,
+        //        replyToMessageId, replyMarkup, cancellationToken);
+        //}
     }
 }

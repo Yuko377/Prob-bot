@@ -3,16 +3,14 @@ using Telegram.Bot.Types;
 
 namespace kontur_project
 {
-    public class DistributionReadingCommand : ICommand
+    public class DistributionReadingCommand : Command
     {
-        public string Name => throw new NotImplementedException();
-
-        public void Execute(Message message, string key)
+        public override void Execute(Message message, string key)
         {
             var keys = AppSettings.Repository[message.Chat.Id].Keys;
             if (!MessageManager.IsItCorrect(key, keys))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "Выбери распределение из предложенных или введи его вручную");
+                ExecutorBot.SendTextMessage(message.Chat.Id, "Выбери распределение из предложенных или введи его вручную");
                 return;
             }
 
@@ -35,17 +33,17 @@ namespace kontur_project
                 }
             }
 
-            MessageManager.MessageOutput(
+            ExecutorBot.SendTextMessage(
                 chatId: message.Chat.Id,
                 text: text);
             AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new DistributionParamsWaitingCondition());
         }
 
-        public bool NeedToExecute(Message message)
+        public override bool NeedToExecute(Message message)
         {
             if (!MessageManager.IsItCorrect(message.Text))
             {
-                MessageManager.MessageOutput(message.Chat.Id, "распределение, а не стикер...");
+                ExecutorBot.SendTextMessage(message.Chat.Id, "распределение, а не стикер...");
                 return false;
             }
             
