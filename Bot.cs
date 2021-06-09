@@ -15,12 +15,14 @@ namespace kontur_project
         public TelegramBotClient botClient;
         public string botName;
 
+        private readonly ILogger logger;
 
-        public Bot()
+        public Bot(ILogger logger)
         {
             botClient = new TelegramBotClient(AppSettings.Key);
             this.botClient.OnMessage += BotOnMessageReceived;
             this.botClient.OnCallbackQuery += BotOnCallbackQueryReceived;
+            this.logger = logger;
         }
 
         public void StartWork()
@@ -70,7 +72,7 @@ namespace kontur_project
                 var user = AppSettings.BotUsers[message.Chat.Id];
                 string lastCondition = user.UserConditions.Last().ToString();
                 var userId = message.Chat.Id;
-                Logger.WriteError(userId, lastCondition, ex.Message);
+                logger.WriteError(userId, lastCondition, ex.Message);
                 this.SendTextMessage(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }
@@ -104,11 +106,9 @@ namespace kontur_project
                 var user = AppSettings.BotUsers[message.Chat.Id];
                 string lastCondition = user.UserConditions.Last().ToString();
                 var userId = message.Chat.Id;
-                Logger.WriteError(userId, lastCondition, ex.Message);
+                logger.WriteError(userId, lastCondition, ex.Message);
                 this.SendTextMessage(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }
-
-
     }
 }

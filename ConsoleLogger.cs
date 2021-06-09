@@ -2,14 +2,14 @@
 
 namespace kontur_project
 {
-    internal static class Logger
+    public class ConsoleLogger: ILogger
     {
-        internal static void StartLog()
+        public void StartLog()
         {
             Console.WriteLine("bot started working");
         }
 
-        internal static void WriteError(long identificator, string condition, string message)
+        public void WriteError(long identificator, string condition, string message)
         {
             Console.WriteLine(
                 $"Error:" +
