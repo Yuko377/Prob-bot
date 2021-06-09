@@ -39,5 +39,15 @@ class NormalDistribution : Distribution
         }
         return 0.5;
     }
+
+    public override string CheckParamsValid(params double[] parametres)
+    {
+        var answer = BaseParamsCheking(parametres);
+
+        if (0 > parametres[1])
+            answer = "Параметр дисперсии не может быть отрицательным";
+
+        return answer;
+    }
 }
 return typeof(NormalDistribution);
