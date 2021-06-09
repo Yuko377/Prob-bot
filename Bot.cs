@@ -42,7 +42,7 @@ namespace kontur_project
         {
             var message = messageEventArgs.Message;
             var messageId = message.Chat.Id;
-            if (!(AppSettings.BotUsers.ContainsKey(messageId)))
+            if (!AppSettings.BotUsers.ContainsKey(messageId))
             {
                 AppSettings.BotUsers.Add(messageId, new BotUser(messageId));
                 AppSettings.Repository[message.Chat.Id] = new RepositoryGetter().GetRepository();

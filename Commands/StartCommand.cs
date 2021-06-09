@@ -17,7 +17,7 @@ namespace kontur_project
 
             if (!message.Text.Contains("/start"))
             {
-                ExecutorBot.SendTextMessage(message.Chat.Id, "Введи /start для начала работы");
+                ExecutorBot.SendTextMessage(message.Chat.Id, "Привет, "+ message.From.FirstName+ "! Введи /start для начала работы");
             }
 
             return message.Text.Contains(this.Name);
