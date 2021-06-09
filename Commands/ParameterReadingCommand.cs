@@ -39,7 +39,7 @@ namespace kontur_project
         
         public void Execute(Message message, string text)
         {
-            AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodWaitingCondition());
+            AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new MethodWaitingCondition());
             var disrtibutionType = AppSettings.BotUsers[message.Chat.Id].Distributions.Last().GetType();
             var currMethods = disrtibutionType.GetMethods();
             var listForInlineKb = new List<List<InlineKeyboardButton>>();

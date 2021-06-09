@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Telegram.Bot.Args;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
@@ -36,7 +37,7 @@ namespace kontur_project
                 AppSettings.Repository[message.Chat.Id] = new RepositoryGetter().GetRepository();
             }
 
-            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Last();
             if (message.Text == "/start")
             {
                 currCondition = new StartCondition();
@@ -55,7 +56,10 @@ namespace kontur_project
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"пользователь {messageId} вызвал исключение:\n{ex.Message}");
+                var user = AppSettings.BotUsers[message.Chat.Id];
+                string lastCondition = user.UserConditions.Last().ToString();
+                var userName = message.From.FirstName;
+                Logger.WriteError(userName, lastCondition, ex.Message);
                 MessageManager.MessageOutput(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }
@@ -70,7 +74,7 @@ namespace kontur_project
 
             var messageId = callbackQuery.Message.Chat.Id;
             var message = callbackQuery.Message;
-            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Last();
 
             
             try
@@ -86,7 +90,10 @@ namespace kontur_project
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"пользователь {messageId} вызвал исключение:\n{ex.Message}");
+                var user = AppSettings.BotUsers[message.Chat.Id];
+                string lastCondition = user.UserConditions.Last().ToString();
+                var userName = message.From.FirstName;
+                Logger.WriteError(userName, lastCondition, ex.Message);
                 MessageManager.MessageOutput(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }
