@@ -8,7 +8,7 @@ namespace kontur_project
         public override void Execute(Message message, string key)
         {
             var keys = AppSettings.Repository[message.Chat.Id].Keys;
-            if (!MessageManager.IsItCorrect(key, keys))
+            if (!MessageManager.IsMessageCorrect(key, keys))
             {
                 ExecutorBot.SendTextMessage(message.Chat.Id, "Выбери распределение из предложенных или введи его вручную");
                 return;
@@ -41,7 +41,7 @@ namespace kontur_project
 
         public override bool NeedToExecute(Message message)
         {
-            if (!MessageManager.IsItCorrect(message.Text))
+            if (!MessageManager.IsMessageCorrect(message.Text))
             {
                 ExecutorBot.SendTextMessage(message.Chat.Id, "распределение, а не стикер...");
                 return false;

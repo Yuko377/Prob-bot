@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -18,10 +19,7 @@ namespace kontur_project
             botClient = new TelegramBotClient(AppSettings.Key);
             this.botClient.OnMessage += BotOnMessageReceived;
             this.botClient.OnCallbackQuery += BotOnCallbackQueryReceived;
-
         }
-
-
 
         public void StartWork()
         {
@@ -38,7 +36,7 @@ namespace kontur_project
            await this.botClient.SendTextMessageAsync(chatId, text, replyMarkup: myReplyMarkup);
         }
 
-        private void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)// async?
+        private void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)
         {
             var message = messageEventArgs.Message;
             var messageId = message.Chat.Id;
@@ -48,7 +46,7 @@ namespace kontur_project
                 AppSettings.Repository[message.Chat.Id] = new RepositoryGetter().GetRepository();
             }
 
-            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Last();
             if (message.Text == "/start")
             {
                 currCondition = new StartCondition();
@@ -56,7 +54,7 @@ namespace kontur_project
 
             try
             {
-                foreach (var command in currCondition.Commands)//////////////////////
+                foreach (var command in currCondition.Commands)
                 {
                     if (command.NeedToExecute(message))
                     {
@@ -67,27 +65,30 @@ namespace kontur_project
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"пользователь {messageId} вызвал исключение:\n{ex.Message}");
+                var user = AppSettings.BotUsers[message.Chat.Id];
+                string lastCondition = user.UserConditions.Last().ToString();
+                var userId = message.Chat.Id;
+                Logger.WriteError(userId, lastCondition, ex.Message);
                 this.SendTextMessage(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }
 
-        private async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)// async
+        private async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs)
         {
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
 
-            await this.botClient.AnswerCallbackQueryAsync(// await
+            await this.botClient.AnswerCallbackQueryAsync(
                 callbackQueryId: callbackQuery.Id,
                 text: $"Received {callbackQuery.Data}");
 
             var messageId = callbackQuery.Message.Chat.Id;
             var message = callbackQuery.Message;
-            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Peek();
+            var currCondition = AppSettings.BotUsers[messageId].UserConditions.Last();
 
 
             try
             {
-                foreach (var command in currCondition.Commands)///////////////
+                foreach (var command in currCondition.Commands)
                 {
                     if (command.NeedToExecute(message))
                     {
@@ -98,7 +99,10 @@ namespace kontur_project
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"пользователь {messageId} вызвал исключение:\n{ex.Message}");
+                var user = AppSettings.BotUsers[message.Chat.Id];
+                string lastCondition = user.UserConditions.Last().ToString();
+                var userId = message.Chat.Id;
+                Logger.WriteError(userId, lastCondition, ex.Message);
                 this.SendTextMessage(messageId, "Не знаю, что ты натворил, но не делай так больше -_- \nможешь продолжать использование");
             }
         }

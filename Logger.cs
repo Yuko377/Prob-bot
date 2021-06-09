@@ -9,7 +9,7 @@ namespace kontur_project
             Console.WriteLine("bot started working");
         }
 
-        internal static void WriteError(string identificator, string condition, string message)
+        internal static void WriteError(long identificator, string condition, string message)
         {
             Console.WriteLine(
                 $"Error:" +

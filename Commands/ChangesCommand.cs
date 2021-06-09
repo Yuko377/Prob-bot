@@ -1,14 +1,16 @@
-﻿using System;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 
 namespace kontur_project
 {
     public class ChangesCommand : Command
     {
+        private const string change = "changeMethod";
+        private const string start = "ToStart";
+
         public override bool NeedToExecute(Message message)
         {
             var txt = message.Text;
-            if (!MessageManager.IsItCorrect(message.Text))
+            if (!MessageManager.IsMessageCorrect(message.Text))
             {
                 ExecutorBot.SendTextMessage(message.Chat.Id, "смешно.");
                 return false;
@@ -18,17 +20,17 @@ namespace kontur_project
 
         public override void Execute(Message message, string text)
         {
-            if (!MessageManager.IsItCorrect(message.Text))
+            if (!MessageManager.IsMessageCorrect(message.Text))
                 ExecutorBot.SendTextMessage(message.Chat.Id, "Похоже, не то");
 
-            if (text == "changeMethod")
+            if (text == change)
             {
                 var tempCmd = new ParameterReadingCommand();
                 tempCmd.Execute(message, text);
 
             }
 
-            if (text == "ToStart")
+            if (text == start)
             {
                 var tempCmd = new StartCommand();
                 tempCmd.Execute(message, text);

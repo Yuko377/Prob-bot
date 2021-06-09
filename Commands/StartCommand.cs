@@ -1,7 +1,6 @@
 ﻿using System;
 using Telegram.Bot.Types;
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace kontur_project
@@ -42,10 +41,6 @@ namespace kontur_project
             }
 
             var distributionKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-            //ExecutorBot.SendTextMessage(
-            //    chatId: message.Chat.Id,
-            //    text: "Выбери распределение",
-            //    replyMarkup: distributionKeyboard);
 
             ExecutorBot.SendTextMessage(message.Chat.Id, "Выбери распределение", distributionKeyboard);
         }

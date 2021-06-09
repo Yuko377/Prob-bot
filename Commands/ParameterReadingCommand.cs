@@ -62,10 +62,6 @@ namespace kontur_project
             }
             
             var methodsKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-            //ExecutorBot.SendTextMessage(
-            //    chatId: message.Chat.Id,
-            //    text: "Выбери метод",
-            //    replyMarkup: methodsKeyboard);
 
             ExecutorBot.SendTextMessage(message.Chat.Id, "Выбери метод", methodsKeyboard);
         }

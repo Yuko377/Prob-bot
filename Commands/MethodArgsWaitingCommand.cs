@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using Telegram.Bot.Types;
 using System.Collections.Generic;
@@ -77,11 +76,6 @@ namespace kontur_project
                 });
 
             var changesKeyboard = new InlineKeyboardMarkup(listForInlineKb);
-
-            //ExecutorBot.SendTextMessage(
-            //    chatId: currId,
-            //    text: result.ToString(),
-            //    replyMarkup: changesKeyboard);
 
             ExecutorBot.SendTextMessage(currId, result.ToString(), changesKeyboard);
         }

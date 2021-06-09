@@ -8,7 +8,7 @@ namespace kontur_project
     {
         public override bool NeedToExecute(Message message)
         {
-            if (!MessageManager.IsItCorrect(message.Text))
+            if (!MessageManager.IsMessageCorrect(message.Text))
             {
                 ExecutorBot.SendTextMessage(message.Chat.Id, "Я просил метод, а не стикер :)");
                 return false;
@@ -29,12 +29,12 @@ namespace kontur_project
                 AppSettings.BotUsers[message.Chat.Id].Args.Add(new double[] { });
                 AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new MethodArgsWaitingCondition());
                 var tempCmd = new MethodArgsWaitingCommand();
-                tempCmd.Execute(message, "owo");
+                tempCmd.Execute(message, "crutch");
             }
             else
             {
                 AppSettings.BotUsers[message.Chat.Id].Methods.Add(methodName);
-                AppSettings.BotUsers[message.Chat.Id].UserConditions.Push(new MethodArgsWaitingCondition());
+                AppSettings.BotUsers[message.Chat.Id].UserConditions.Add(new MethodArgsWaitingCondition());
                 ExecutorBot.SendTextMessage(
                     chatId: message.Chat.Id,
                     text: "Вбей аргумент");
