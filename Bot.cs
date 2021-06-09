@@ -10,6 +10,8 @@ namespace kontur_project
 {
     public class Bot
     {
+        private const string startCommand = "/start";
+
         public TelegramBotClient botClient;
         public string botName;
 
@@ -47,7 +49,7 @@ namespace kontur_project
             }
 
             var currCondition = AppSettings.BotUsers[messageId].UserConditions.Last();
-            if (message.Text == "/start")
+            if (message.Text == startCommand)
             {
                 currCondition = new StartCondition();
             }
