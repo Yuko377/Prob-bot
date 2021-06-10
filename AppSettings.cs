@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 
